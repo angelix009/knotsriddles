@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Knot Riddles</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'PixelFont';
+            src: url('https://fonts.cdnfonts.com/css/press-start-2p') format('woff2');
+        }
+        .roadmap-container {
+    display: none;
+    width: 80%;
+    max-width: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    font-family: 'PixelFont', monospace;
+}
+
+.milestone {
+    padding-left: 30px;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.milestone::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: -40px; /* Connecte au prochain milestone */
+    width: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.milestone:last-child::before {
+    bottom: 0;
+}
+
+.milestone::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.milestone-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'PixelFont', monospace;
+    text-transform: uppercase;
+}
+
+.milestone-content {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.milestone-content br {
+    content: "";
+    display: block;
+    margin: 8px 0;
+}
+
+.back-button {
+    position: relative;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'PixelFont', monospace;
+    font-size: 0.8rem;
+    display: block;
+    width: fit-content;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Media queries pour mobile */
+@media (max-width: 768px) {
+    .roadmap-container {
+        width: 90%;
+        padding: 1.5rem;
+    }
+
+    .milestone {
+        padding-left: 20px;
+    }
+
+    .milestone-title {
+        font-size: 1rem;
+    }
+
+    .milestone-content {
+        font-size: 0.8rem;
+    }
+}
+.roadmap-container {
+    display: none;
+    width: 80%;
+    max-width: 600px;
+    height: 40vh; /* Hauteur maximale fixe */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    color: white;
+    font-family: monospace;
+    overflow-y: auto; /* Permet le scroll vertical */
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Pour Firefox */
+}
+
+/* Style de la scrollbar pour Chrome/Safari */
+.roadmap-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.roadmap-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.roadmap-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+/* Conteneur interne pour le padding */
+.roadmap-content {
+    padding: 2rem;
+}
+
+/* Ajustement pour le bouton back */
+.back-button {
+    position: sticky;
+    top: 0;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 1;
+}
+
+/* Media queries pour mobile */
+@media (max-width: 768px) {
+    .roadmap-container {
+        width: 90%;
+        height: 60vh;
+    }
+    
+    .roadmap-content {
+        padding: 1.5rem;
+    }
+}
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            background: #000;
+            font-family: monospace;
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .title {
+            font-family: 'PixelFont', monospace;
+            font-size: 2.5rem;
+            text-align: center;
+            flex-grow: 1;
+            color: #fff;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .social-icon:hover {
+            opacity: 0.7;
+        }
+
+        .contract-address {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(5px);
+            z-index: 99;
+        }
+
+        .address-text {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .copy-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor:pointer;
+    transition: background 0.3s, transform 0.1s;
+    position: relative;
+}
+
+.copy-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1); /* Zoom léger */
+}
+
+.copy-button:active {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0.95); /* Réduction légère pour effet de clic */
+}
+
+        .dialogue-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            text-align: left;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-menu {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 3rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-item {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .nav-item:hover {
+            color: #aaa;
+        }
+
+        .riddle-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            min-height: 6em;
+            white-space: pre-line;
+        }
+
+        .video-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        #smokeVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scaleY(-1);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .character {
+            position: absolute;
+            left: 50px;
+            bottom: 0;
+            z-index: 2;
+            max-height: 50vh;
+            z-index: 9;
+            width: auto;
+        }
+
+@keyframes blink {
+    0% { opacity: 1; }
+    45% { opacity: 1; }
+    48% { opacity: 0.4; }
+    50% { opacity: 0.3; }
+    52% { opacity: 0.4; }
+    55% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+.character {
+    position: absolute;
+    left: 50px;
+    bottom: 0;
+    z-index: 9;
+    max-height: 50vh;
+    width: auto;
+    animation: blink 8s infinite;
+}
+
+@media (max-width: 768px) {
+    .character {
+        max-height: 40vh;
+        left: -10px;
+        max-width: 45vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .character {
+        max-height: 35vh;
+    }
+}
+        @media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+    }
+
+    .contract-address {
+        top: 70px;
+        right: 10px;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        transform: scale(0.9);
+    }
+
+    .dialogue-box {
+        width: 85%;
+        padding: 1.5rem;
+    }
+
+    .nav-menu {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3rem;
+    z-index: 10;
+    font-size: 1.5rem;
+    z-index: 10;  /* Ajout d'un z-index plus élevé */
+}
+
+    .nav-item {
+        padding: 0.3rem;
+    }
+
+    .character {
+        max-height: 40vh;
+        left: -10px;
+        max-width: 45vw;
+    }
+
+    .riddle-text {
+        font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        margin: 0 auto;  /* Centrage amélioré */
+        text-align: center;
+        width: 100%;     /* Assure que le titre prend toute la largeur */
+    }
+
+    .nav-menu {
+        bottom: 5%;      /* Position plus basse */
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 1rem;
+        z-index: 10;
+        width: 100%;    /* Assure que le menu prend toute la largeur */
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-menu {
+        bottom: 2%; 
+        z-index: 10;
+        gap: 0.8rem;   /* Réduit légèrement l'espacement */
+    }
+
+    .nav-item {
+        font-size: 0.9rem;
+        padding: 0.3rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="smokeVideo" autoplay loop muted playsinline>
+            <source src="smoke.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <header class="header">
+        <div class="logo"></div>
+        <h1 class="title">KNOT'S    RIDDLES</h1>
+        <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="social-icon"><i class="fas fa-chart-line"></i></a>
+        </div>
+    </header>
+
+    <div class="contract-address">
+        <span class="address-text">Comming soon ...</span>
+        <button class="copy-button" onclick="copyAddress()">
+            <i class="fas fa-copy"></i>
+        </button>
+    </div>
+    
+    <div class="dialogue-box">
+        <div class="riddle-text" id="riddleText"></div>
+    </div>
+
+    <nav class="nav-menu">
+        <a href="https://x.com/KnotsRiddles" class="nav-item">BIRTH</a>
+        <a href="#" class="nav-item">FUTURE</a>
+        <a href="https://knots-riddles.gitbook.io/knots-riddles-docs-1" class="nav-item">DOCS</a>
+        <a href="#" class="nav-item">WALLET</a>
+    </nav>
+
+    <img src="knot.webp" alt="Knot character" class="character">
+
+    <script>
+        const riddles = [
+            "Born from a dog's smile I came to be,\nNow worth billions, can you guess me?\nMusk tweets about me day and night,\nWhat meme coin am I, shining bright?",
+            "Red eyes glowing, diamond hands strong,\nHODLers chant my name in song.\nWhen others paper hand and flee,\nWhat crypto mindset could I be?",
+            "Whales swim in my deep green sea,\nSmall fish follow their mystery.\nWhen they dump, the market shakes,\nWhat crypto pattern does this make?",
+            "To the moon they always say,\nBut some coins go the other way.\nWhen charts look like a falling knife,\nWhat do we call this crypto life?",
+            "Apes together strong they claim,\nCollecting JPEGs in the game.\nBlue chips valued sky-high still,\nWhat NFT club fits this bill?",
+            "I'm a place where tokens trade,\nLiquidity pools carefully made.\nNo CEX can match my speed,\nWhat DeFi tool could I be?",
+            "Gas fees high, emotions higher,\nGwei burning like sacred fire.\nWhen the network's all congested,\nWhich blockchain is being tested?",
+            "Pepe stares with knowing eyes,\nRare coins often make holders wise.\nBut if you sleep on trending memes,\nWhat do we call these missed moonbeams?"
+        ];
+
+        let currentRiddle = 0;
+        let charIndex = 0;
+        let riddleText = document.getElementById('riddleText');
+        
+        function typeWriter() {
+            if (charIndex < riddles[currentRiddle].length) {
+                riddleText.textContent += riddles[currentRiddle].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 50);
+            } else {
+                setTimeout(() => {
+                    riddleText.textContent = '';
+                    currentRiddle = (currentRiddle + 1) % riddles.length;
+                    charIndex = 0;
+                    typeWriter();
+                }, 5000);
+            }
+        }
+
+        function copyAddress() {
+            const address = "0x1234...5678"; // Remplacez par la vraie adresse
+            navigator.clipboard.writeText(address);
+            const button = document.querySelector('.copy-button');
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-copy"></i>';
+            }, 2000);
+        }
+
+        typeWriter();
+        function toggleView(view) {
+    const riddleBox = document.querySelector('.dialogue-box');
+    const roadmapContainer = document.getElementById('roadmapContainer');
+    
+    if (view === 'roadmap') {
+        riddleBox.style.display = 'none';
+        roadmapContainer.style.display = 'block';
+    } else {
+        riddleBox.style.display = 'block';
+        roadmapContainer.style.display = 'none';
+    }
+}
+
+// Modifiez votre lien Future pour appeler la fonction
+document.querySelectorAll('.nav-item').forEach(item => {
+    if (item.textContent.trim() === "FUTURE") {
+        item.onclick = function(e) {
+            e.preventDefault();
+            toggleView('roadmap');
+        };
+    } 
+});
+
+    </script>
+    <div class="roadmap-container" id="roadmapContainer">
+        <button class="back-button" onclick="toggleView('riddles')">← Back to Riddles</button>
+        <div class="milestone">
+            <div class="milestone-title">Launch Phase • 100K MC</div>
+            <div class="milestone-content">
+                • Solana SPL Token Launch<br>
+                • Community Development<br>
+                • Initial Solana Ecosystem Marketing<br>
+                • First Riddle Contest (10 SOL Prize Pool)
+            </div>
+        </div>
+        <div class="milestone">
+            <div class="milestone-title">Growth Phase • 500K MC</div>
+            <div class="milestone-content">
+                • 10% Token Burn Event<br>
+                • Jupiter/Raydium Integration<br>
+                • Weekly Riddle Tournaments<br>
+                • Community SPL Wallet Setup
+            </div>
+        </div>
+        <div class="milestone">
+            <div class="milestone-title">Expansion Phase • 1M MC</div>
+            <div class="milestone-content">
+                • Major Solana DEX Listing<br>
+                • 15% Token Burn<br>
+                • Solana NFT Collection<br>
+                • Staking Program Launch
+            </div>
+        </div>
+        <div class="milestone">
+            <div class="milestone-title">Evolution Phase • 5M MC</div>
+            <div class="milestone-content">
+                • Solana P2E Development<br>
+                • SOL Ecosystem Marketing<br>
+                • 25% Token Burn<br>
+                • CEX Listings
+            </div>
+        </div>
+        <div class="milestone">
+            <div class="milestone-title">Moon Phase • 10M+ MC</div>
+            <div class="milestone-content">
+                • Metaplex Integration<br>
+                • Final 30% Token Burn<br>
+                • Global SOL Marketing<br>
+                • Major Community Events
+            </div>
+        </div>
+    </div>
+</body>
+</html>
